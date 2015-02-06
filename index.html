@@ -8,12 +8,12 @@
 
 	</head>
 	<body>
-		
+		<h1>Rodent reports over time</h1>
 
 
 	<script type="text/javascript">
 
-		var speed = 2000;
+		var speed = 1000;
 
 		var canvas = d3.select("body").append("svg")
 						.attr("width", 1200)
@@ -28,9 +28,6 @@
 		var color_scale = d3.scale.linear()
     							.domain([1, 122])
     							.range(["darkgreen", "red"]);
-
-
-
 
 		d3.json("data/nyc-zip-code-tabulation-areas-polygons.geojson", function(data){
 
@@ -53,6 +50,19 @@
 				.attr("id", function(d) {
 					return "path-" + d.properties.postalCode;
 				});
+
+			groups.on("mouseover", function(d) {
+				d3.select(this).append("text")
+						.attr("x",function() { return path.centroid(d)[0]; })
+						.attr("y",function() { return path.centroid(d)[1]; })
+						.attr("text-anchor","middle")
+						.attr("id", function(d) { return "text-" + d.properties.postalCode })
+						.text(d.properties.PO_NAME);
+			})
+
+			groups.on("mouseout", function(d) {
+				d3.select("#text-" + d.properties.postalCode).remove();
+			})
 
 			d3.json("data/incidents_zip_grouped.json", function(incidents) {
 			
